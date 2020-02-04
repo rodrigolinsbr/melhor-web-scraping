@@ -1,0 +1,24 @@
+{
+  "name": "webscraping",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigolinsbr/melhor-web-scraping.git"
+  },
+  "author": "Rodrigo Lins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rodrigolinsbr/melhor-web-scraping/issues"
+  },
+  "homepage": "https://github.com/rodrigolinsbr/melhor-web-scraping#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "request": "^2.88.0"
+  }
+}
