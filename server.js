@@ -1,82 +1,36 @@
-var express = require('express'),
-    fs = require('fs'),
-    request = require('request'),
-    cheerio = require('cheerio'),
-    app = express();
+const express = require("express");
+const app = express();
+// const mongoose = require("mongoose");
+const cors = require("cors");
+const routes = require('./startUp/routes')
+// const config = require("./config/db");
+const status = require("http-status");
 
-// Passo 1
-app.get('/raspagem', function(req, res) {
-    // Passo 2
-    url = 'https://www.submarino.com.br/categoria/livros/auto-ajuda?ordenacao=relevance';
-    request(url, function(error, response, html) {
-        if (!error) {
-            var $ = cheerio.load(html);
-        
-            // Objeto que irá armazenar a tabela
-            var resultado = [];
-        
-            // Passo 3
-            // Manipulando o seletor específico para montar nossa estrutura
-            // Escolhi não selecionar a primeira linha porque faz parte do header da tabela
-            // $('#listagem tr:not(:first-child)').each(function(i) {
-                $('.product-grid').each(function(i) {
-                // Obtendo as propriedades da tabela. 
-                // O método .trim() garante que irá remover espaço em branco
-                 var titulo = $(this).find('h2').text().trim();
-                //  var img = $(this).find('img').text().trim();
-                    // orgao = $(this).find('td').eq(1).text().trim(),
-                    // valorTotal = $(this).find('td').eq(2).text().trim();
-                console.log(titulo)
-                // Inserindo os dados obtidos no nosso objeto
-                // resultado.push({
-                //     codigo: codigo,
-                //     orgao: orgao,
-                //     total: valorTotal
-                // });
-            });
-        }
-    })
-})
+// DB config
+// DB config
+// let mongodbAddress = config.mongodbAddress;
+// mongoose.connect(mongodbAddress, {
+//   useNewUrlParser: true,
+//   useCreateIndex: true
+// });
 
-app.get('/olx', function(req, res) {
+app.use(cors());
 
-    console.log('olx')
-    url = 'https://pe.olx.com.br/imoveis/venda/apartamentos';
-    request(url, function(error, response, html) {
-        if (!error) {
-            var $ = cheerio.load(html);
-        
-            // Objeto que irá armazenar a tabela
-            var result = [];
-        
-            // Passo 3
-            // Manipulando o seletor específico para montar nossa estrutura
-            // Escolhi não selecionar a primeira linha porque faz parte do header da tabela
-            // $('#listagem tr:not(:first-child)').each(function(i) {
-                $('.section_OLXad-list  ul').each(function(i) {
-                    
-                // Obtendo as propriedades da tabela. 
-                // O método .trim() garante que irá remover espaço em branco
-                 var title = $(this).find('.OLXad-list-title').text().trim();
-                 var price = $(this).find('.OLXad-list-price').text().trim();
-                //  var img = $(this).find('img').text().trim();
-                    // orgao = $(this).find('td').eq(1).text().trim(),
-                    // valorTotal = $(this).find('td').eq(2).text().trim();
-                console.log(price)
-                // Inserindo os dados obtidos no nosso objeto
-                result.push({
-                    title: title,
-                    value: price
-                });
-            });
-            res.json({ result });
-        }
-    })
+// Server config
+app.use(express.json());
 
+// Import routes
+app.use("/api", routes);
 
-})
+//tratando erros globais
+app.use((request, response, next) => {
+  response.status(status.NOT_FOUND).send();
+});
 
-app.listen('8080')
-console.log('Executando raspagem de dados na porta 8080...');
-exports = module.exports = app;
+app.use((error, request, response, next) => {
+  response.status(status.INTERNAL_SERVER_ERROR).json({ error });
+});
 
+// Server start
+const port = process.env.PORT || 3001;
+app.listen(port, () => console.log("on: " + port));
