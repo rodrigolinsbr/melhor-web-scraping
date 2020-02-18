@@ -5,8 +5,10 @@ const app = express();
 
 
 const olx = require('../resources/olx/olx.routes');
+const zap = require('../resources/zap/zap.routes');
 
 app.use(olx);
+app.use(zap);
 
 
 module.exports =  app
